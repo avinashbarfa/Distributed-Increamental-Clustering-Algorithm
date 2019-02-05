@@ -10,11 +10,11 @@ Author : Avinash Barfa
 import numpy as np
 import pandas as pd
 
-raw_data = pd.read_csv("G:\Project_Data\diabetes_data.csv")
+raw_data = pd.read_excel("G:\Project_Data\Increamental-Clustering\diabetes_data.xlsx")
 df = pd.DataFrame(raw_data)
 current_data = df.iloc[:,1:9]
 
-#print(current_data)
+print(current_data)
 
 row_total = np.sum(current_data,axis=1)
 column_total= np.sum(current_data,axis=0)
@@ -50,9 +50,23 @@ for j in range(row_total.size):
 weight = np.sqrt(row_total)
 
 #Writing Data to CSV file
-df['Row Total'] = row_total
-df['Probability'] = probability
-df['Error'] = error
-df['Weight'] = weight
+df1 = pd.DataFrame.copy(df)
+df1['Row Total'] = row_total
+df1['Probability'] = probability
+df1['Error'] = error
+df1['Weight'] = weight
 
-df.to_csv("G:\Project_Data\diabetes_data.csv",sep=',',index=False)
+
+df2 = pd.DataFrame.copy(df1.iloc[1:1,0:14])
+
+for i in range(5):
+    for j in range(i+1,5):
+        #print(df1.iloc[i:i+1,0:14])
+        #print(df1.iloc[j:j+1,0:14])
+        #print('--------------------------------------------------')
+        df2 = pd.DataFrame.append(df2,df1.iloc[i:i+1,0:14])
+        df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),df1.iloc[j:j+1,0:14])
+with pd.ExcelWriter('diabetes_data.xlsx') as writer:
+    df.to_excel(writer, sheet_name='Sheet1',index=False)
+    df1.to_excel(writer, sheet_name='Sheet2',index=False)
+    df2.to_excel(writer, sheet_name='Sheet3',index=False)
