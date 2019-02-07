@@ -62,14 +62,14 @@ for i in range(5):
     for j in range(i+1,5):
         df2 = pd.DataFrame.append(df2,df1.iloc[i:i+1])
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),df1.iloc[j:j+1])
-        df3 = pd.DataFrame.as_matrix(df1[i:i+1].sum() + df1[j:j+1].sum())
-        df4 = pd.DataFrame(df3)
-        df4 = df4.T
-       # df5 = pd.DataFrame.append(df2,df4)
-        print(df4)
-        print('------------------')
+        df3 = pd.DataFrame.as_blocks(df1[i:i+1].sum() + df1[j:j+1].sum())
+        df3 = pd.DataFrame(df3)
+        df3 = df3.T
+        df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),pd.DataFrame.copy(df3))
+        print(df2)
+        print('-----------------')
         
 with pd.ExcelWriter('diabetes_data.xlsx') as writer:
     df.to_excel(writer, sheet_name='Sheet1',index=False)
     df1.to_excel(writer, sheet_name='Sheet2',index=False)
-    df5.to_excel(writer, sheet_name='Sheet3',index=False)
+    df2.to_excel(writer, sheet_name='Sheet3',index=False)
