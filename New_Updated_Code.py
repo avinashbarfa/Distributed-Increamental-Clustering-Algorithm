@@ -57,24 +57,22 @@ df12 = pd.DataFrame()
 df13 = pd.DataFrame()
 df14 = pd.DataFrame()
 df15 = pd.DataFrame()
-dferr = pd.DataFrame()
+df_error = pd.DataFrame()
 temp = 0
 for i in range(200):
     for j in range(i+1,200):
+        
         df2 = pd.DataFrame.append(df2,df1.iloc[i:i+1])
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),df1.iloc[j:j+1])
         df3 = pd.DataFrame.as_blocks(df1[i:i+1].sum() + df1[j:j+1].sum())
         df3 = pd.DataFrame(df3)
-        dferr = pd.DataFrame.append(dferr,pd.DataFrame.copy(df3.T))
+        df_error = pd.DataFrame.append(df_error,pd.DataFrame.copy(df3.T))
         df3 = df3.T
+        
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),pd.DataFrame.copy(df3))
-        print("temp =",temp)
-        ex1 = (df1.iat[i,12] * dferr.iloc[temp:temp+1,2:8].sum())
-        print(str(i+1)+str('-')+str(j+1))
-#        print(df1.iat[i,12])
-        print(dferr.iloc[0:1,2:8])
+        ex1 = (df1.iat[i,12] * df_error.iloc[temp:temp+1,2:8].sum())
         ex2 = (df1.iloc[i:i+1,2:8].sum())
-        ex3 = (df1.iat[i,12].sum() * dferr.iloc[temp:temp+1,2:8].sum())
+        ex3 = (df1.iat[i,12].sum() * df_error.iloc[temp:temp+1,2:8].sum())
         ex4 = (1 - df1.iat[i,12].sum())
         
         df4 = pd.DataFrame.as_blocks((ex1 - ex2) / (np.sqrt(ex3 * ex4)))
@@ -87,7 +85,7 @@ for i in range(200):
         df5 = df5.T
         df10 = pd.DataFrame.append(pd.DataFrame.copy(df10),pd.DataFrame.copy(df5))
 
-        ex5 = (dferr.iloc[temp:temp+1,2:8].sum())
+        ex5 = (df_error.iloc[temp:temp+1,2:8].sum())
         df6 = pd.DataFrame.as_blocks(np.sqrt(ex5))
         df6 = pd.DataFrame(df6)
         df6 = df6.T
@@ -110,9 +108,11 @@ for i in range(200):
         df8 = df8.T
         df13 = pd.DataFrame.append(pd.DataFrame.copy(df13),pd.DataFrame.copy(df8))
         
+        print(str(i+1)+str('-')+str(j+1))
         index.append(str(i+1)+str('-')+str(j+1))
         df14 = pd.DataFrame(index)
         
+        print("temp =",temp)
         temp = temp + 1
 
 
@@ -129,7 +129,6 @@ df16 = pd.DataFrame()
 df17 = pd.DataFrame()
 df18 = pd.DataFrame()
 df19 = pd.DataFrame()
-print(dferr)
 
 for index in range(temp):
     if((df15.iat[index,1]) < 0.066151499):
@@ -143,7 +142,7 @@ for index in range(temp):
 
 
 with pd.ExcelWriter(path) as writer:
-   df.to_excel(writer, sheet_name='Sheet1',index=False)
+   df.to_excel(writer, sheet_name='Original Data',index=False)
    df1.to_excel(writer, sheet_name='Sheet2',index=False)
    df2.to_excel(writer, sheet_name='Sheet3',index=False)
    df9.to_excel(writer, sheet_name='Error',index=False)
@@ -151,7 +150,6 @@ with pd.ExcelWriter(path) as writer:
    df11.to_excel(writer, sheet_name='Weight',index=False)
    df12.to_excel(writer, sheet_name='Error sq x Weight',index=False)
    df15.to_excel(writer, sheet_name='Closeness Factor',index=False)
-#   dferr.to_excel(writer ,sheet_name='xxx', index =False)
    df16.to_excel(writer, sheet_name='Cluster 1',index = False)
    df17.to_excel(writer, sheet_name='Cluster 2',index = False)
    df18.to_excel(writer, sheet_name='Cluster 3',index = False)
