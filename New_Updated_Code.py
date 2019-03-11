@@ -57,19 +57,24 @@ df12 = pd.DataFrame()
 df13 = pd.DataFrame()
 df14 = pd.DataFrame()
 df15 = pd.DataFrame()
-
-for i in range(1):
-    for j in range(i+1,767):
+dferr = pd.DataFrame()
+temp = 0
+for i in range(200):
+    for j in range(i+1,200):
         df2 = pd.DataFrame.append(df2,df1.iloc[i:i+1])
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),df1.iloc[j:j+1])
         df3 = pd.DataFrame.as_blocks(df1[i:i+1].sum() + df1[j:j+1].sum())
-        df3 = pd.DataFrame(df3) 
+        df3 = pd.DataFrame(df3)
+        dferr = pd.DataFrame.append(dferr,pd.DataFrame.copy(df3.T))
         df3 = df3.T
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),pd.DataFrame.copy(df3))
-               
-        ex1 = (df1.iat[i,12] * df3.iloc[i:i+1,2:8].sum())
+        print("temp =",temp)
+        ex1 = (df1.iat[i,12] * dferr.iloc[temp:temp+1,2:8].sum())
+        print(str(i+1)+str('-')+str(j+1))
+#        print(df1.iat[i,12])
+        print(dferr.iloc[0:1,2:8])
         ex2 = (df1.iloc[i:i+1,2:8].sum())
-        ex3 = (df1.iat[i,12].sum() * df3.iloc[i:i+1,2:8].sum())
+        ex3 = (df1.iat[i,12].sum() * dferr.iloc[temp:temp+1,2:8].sum())
         ex4 = (1 - df1.iat[i,12].sum())
         
         df4 = pd.DataFrame.as_blocks((ex1 - ex2) / (np.sqrt(ex3 * ex4)))
@@ -77,26 +82,26 @@ for i in range(1):
         df4 = df4.T
         df9 = pd.DataFrame.append(pd.DataFrame.copy(df9),pd.DataFrame.copy(df4))
         
-        df5 = pd.DataFrame.as_blocks(df4.iloc[i:i+1].sum() * df4.iloc[i:i+1].sum())
+        df5 = pd.DataFrame.as_blocks(df9.iloc[temp:temp+1].sum() * df9.iloc[temp:temp+1].sum())
         df5 = pd.DataFrame(df5)
         df5 = df5.T
         df10 = pd.DataFrame.append(pd.DataFrame.copy(df10),pd.DataFrame.copy(df5))
 
-        ex5 = (df3.iloc[i:i+1,2:8].sum())
+        ex5 = (dferr.iloc[temp:temp+1,2:8].sum())
         df6 = pd.DataFrame.as_blocks(np.sqrt(ex5))
         df6 = pd.DataFrame(df6)
         df6 = df6.T
         df11 = pd.DataFrame.append(pd.DataFrame.copy(df11),pd.DataFrame.copy(df6))
         
-        df7 = pd.DataFrame.as_blocks(df6.iloc[i:i+1].sum() * df5.iloc[i:i+1].sum())
+        df7 = pd.DataFrame.as_blocks(df11.iloc[temp:temp+1].sum() * df10.iloc[temp:temp+1].sum())
         df7 = pd.DataFrame(df7)
         df7 = df7.T
         df12 = pd.DataFrame.append(pd.DataFrame.copy(df12),pd.DataFrame.copy(df7))
         
-        current_data1 = df7.iloc[i:i+1]
+        current_data1 = df12.iloc[temp:temp+1]
         total1 = np.sum(current_data1,axis=1)
         
-        current_data2 = df6.iloc[i:i+1]
+        current_data2 = df11.iloc[temp:temp+1]
         total2 = np.sum(current_data2,axis=1)
         
         CF = (total1 / total2)
@@ -108,7 +113,7 @@ for i in range(1):
         index.append(str(i+1)+str('-')+str(j+1))
         df14 = pd.DataFrame(index)
         
-        
+        temp = temp + 1
 
 
 df14 = df14.T
@@ -124,9 +129,9 @@ df16 = pd.DataFrame()
 df17 = pd.DataFrame()
 df18 = pd.DataFrame()
 df19 = pd.DataFrame()
+print(dferr)
 
-
-for index in range(766):
+for index in range(temp):
     if((df15.iat[index,1]) < 0.066151499):
         df16 = pd.DataFrame.append(df16,df15.iloc[index:index+1,])
     elif(0.066151499 < (df15.iat[index,1]) < 0.106095987):
@@ -146,6 +151,7 @@ with pd.ExcelWriter(path) as writer:
    df11.to_excel(writer, sheet_name='Weight',index=False)
    df12.to_excel(writer, sheet_name='Error sq x Weight',index=False)
    df15.to_excel(writer, sheet_name='Closeness Factor',index=False)
+#   dferr.to_excel(writer ,sheet_name='xxx', index =False)
    df16.to_excel(writer, sheet_name='Cluster 1',index = False)
    df17.to_excel(writer, sheet_name='Cluster 2',index = False)
    df18.to_excel(writer, sheet_name='Cluster 3',index = False)
