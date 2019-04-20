@@ -7,8 +7,8 @@ read_clustered_data_2 = pd.read_excel("Clusterd_Data.xlsx",sheet_name='Cluster 2
 read_clustered_data_3 = pd.read_excel("Clusterd_Data.xlsx",sheet_name='Cluster 3')
 read_clustered_data_4 = pd.read_excel("Clusterd_Data.xlsx",sheet_name='Cluster 4')
 
-#read_file_path = input('Enter the Path of the File : ')
-read_file_path = "G:\Project_Data\Increamental-Clustering\Additional_Data.csv"
+read_file_path = input('Enter the Path of the File : ')
+#read_file_path = "Additional_Data.csv"
 raw_data = pd.read_csv(read_file_path)
 #Store in DataFrame
 df = pd.DataFrame(raw_data)
@@ -179,8 +179,9 @@ def Merge_Remove_Element(array_list):
 print('List Result 1 =',Merge_Remove_Element(array_list_1))
 print('List Result 2 =',Merge_Remove_Element(array_list_2))
 print('List Result 3 =',Merge_Remove_Element(array_list_3))
-print('List Result 4 =',Merge_Remove_Element(array_list_4))        
-print("Writing Operation in Sheet Started.\n")
+print('List Result 4 =',Merge_Remove_Element(array_list_4))    
+    
+
 
 array_list_1 = Merge_Remove_Element(array_list_1)
 array_list_2 = Merge_Remove_Element(array_list_2)
@@ -210,13 +211,22 @@ print(array_list_2)
 print(array_list_3)
 print(array_list_4) 
 
-df16 = pd.DataFrame(array_list_1)
-df17 = pd.DataFrame(array_list_2)
-df18 = pd.DataFrame(array_list_3)
-df19 = pd.DataFrame(array_list_4)
-        
- 
-  
+df16 = pd.DataFrame()
+df17 = pd.DataFrame()
+df18 = pd.DataFrame()
+df19 = pd.DataFrame()
+
+for row_index in array_list_1:
+    df16 = pd.DataFrame.append(df16,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_2:
+    df17 = pd.DataFrame.append(df17,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_3:
+    df18 = pd.DataFrame.append(df18,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_4:
+    df19 = pd.DataFrame.append(df19,df.iloc[int(row_index):int(row_index)+1])
+
+print("Writing Operation in Sheet Started.\n") 
+    
 with pd.ExcelWriter("Incremental_Diabetes_Data.xlsx") as writer:
    df.to_excel(writer, sheet_name='Original Data',index=False)
    df1.to_excel(writer, sheet_name='Sheet2',index=False)

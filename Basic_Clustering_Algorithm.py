@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 
 #Read the Data
-raw_data = pd.read_csv("G:\Project_Data\Increamental-Clustering\diabetes_data.csv")
+raw_data = input('Enter the Path of the File : ')
+raw_data = pd.read_csv(raw_data)
 #Store in DataFrame
 df = pd.DataFrame(raw_data)
-current_data = df.iloc[:,1:9] #All rows and columns from 1 to 9
+current_data = df.iloc[:,1:8] #All rows and columns from 1 to 9
 
 #print(current_data)
 row_total = np.sum(current_data,axis=1) #Row Addition
@@ -56,8 +57,8 @@ df14 = pd.DataFrame()
 df15 = pd.DataFrame()
 df_error = pd.DataFrame()
 temp = 0
-for i in range(30):
-    for j in range(i+1,30):
+for i in range(100):
+    for j in range(i+1,100):
         
         df2 = pd.DataFrame.append(df2,df1.iloc[i:i+1])
         df2 = pd.DataFrame.append(pd.DataFrame.copy(df2),df1.iloc[j:j+1])
@@ -171,8 +172,7 @@ def Merge_Remove_Element(array_list):
 print('List Result 1 =',Merge_Remove_Element(array_list_1))
 print('List Result 2 =',Merge_Remove_Element(array_list_2))
 print('List Result 3 =',Merge_Remove_Element(array_list_3))
-print('List Result 4 =',Merge_Remove_Element(array_list_4))        
-print("Writing Operation in Sheet Started.\n")
+print('List Result 4 =',Merge_Remove_Element(array_list_4))
 
 array_list_1 = Merge_Remove_Element(array_list_1)
 array_list_2 = Merge_Remove_Element(array_list_2)
@@ -202,10 +202,21 @@ print(array_list_2)
 print(array_list_3)
 print(array_list_4) 
 
-df16 = pd.DataFrame(array_list_1)
-df17 = pd.DataFrame(array_list_2)
-df18 = pd.DataFrame(array_list_3)
-df19 = pd.DataFrame(array_list_4)
+df16 = pd.DataFrame()
+df17 = pd.DataFrame()
+df18 = pd.DataFrame()
+df19 = pd.DataFrame()
+
+for row_index in array_list_1:
+    df16 = pd.DataFrame.append(df16,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_2:
+    df17 = pd.DataFrame.append(df17,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_3:
+    df18 = pd.DataFrame.append(df18,df.iloc[int(row_index):int(row_index)+1])
+for row_index in array_list_4:
+    df19 = pd.DataFrame.append(df19,df.iloc[int(row_index):int(row_index)+1])    
+        
+print("Writing Operation in Sheet Started.\n")
           
 with pd.ExcelWriter("Basic_Diabetes_Data.xlsx") as writer:
    df.to_excel(writer, sheet_name='Original Data',index=False)
@@ -220,6 +231,7 @@ with pd.ExcelWriter("Basic_Diabetes_Data.xlsx") as writer:
    df17.to_excel(writer, sheet_name='Cluster 2',index = False)
    df18.to_excel(writer, sheet_name='Cluster 3',index = False)
    df19.to_excel(writer, sheet_name='Cluster 4',index = False)
+
 
 
 with pd.ExcelWriter("Clusterd_Data.xlsx") as writer:
